@@ -16,7 +16,7 @@ function markerColor(depth){
         return "#32dcff"
     }
     else if (depth <=10) {
-        return "#32ff84"
+        return "#ff99ff"
     }
     else if (depth <=20) {
         return "#32ff32"
@@ -31,6 +31,7 @@ function markerColor(depth){
         return "#ff3232"
     }
 }
+
 
 
 //perform a GET request to the query URL
@@ -100,4 +101,29 @@ function createMap(earthquakes) {
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
-}
+
+    //adding a legend to the map
+
+    var legend = L.control({
+        position: 'bottomright'
+    });
+
+    legend.onAdd = function() {
+        var div = L.DomUtil.create('div', 'legend');
+        
+            colors = ["#32dcff", "#ff99ff","#32ff32","#e5ff32","#ffb232","#ff3232"];
+            labels = ["< 5m", "5m - 10m", "10m - 20m", "20m - 30m", "30m - 40m", "> 40m"];
+
+        for (var i = 0; i <colors.length; i++) {
+
+            div.innerHTML += '<li style="padding: 4px; background-color:' + colors[i] + '">' + labels[i] + '</li>';
+            }
+
+        return div;
+    };
+
+    legend.addTo(myMap);
+};
+
+
+
