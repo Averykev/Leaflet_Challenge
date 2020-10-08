@@ -1,13 +1,30 @@
-
 //store API query url's
 var url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
-var tectonicURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_plates.json"
+var tectonicURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+
+//create variables that will hold our json data
+//had to create these outside of the function so that they would be "defined"
+var earthquakes = new L.LayerGroup();
+var tectonicPlates = new L.LayerGroup();
 
 //perform a GET request to the query URL
+//nest a second promise in the GET request in order to pull the tectonic plate data as well
 d3.json(url, function(data){
-    createFeatures(data.features);
+    myMap = createFeatures(data.features);
+    d3.json(tectonicURL, function(tectonicData){
+        L.geoJson(tectonicData, {
+            color: "blue",
+            stroke: true,
+            weight: 2,
+            fillOpacity: 0
+
+        }).addTo(tectonicPlates);
+
+        tectonicPlates.addTo(myMap)
+    });
 });
 
+//createFeatures function that creates the popups, and also the locations of the earthquake markers 
 function createFeatures(earthquakeData){
     function onEachFeature(feature, layer){
         layer.bindPopup("<h3>" + feature.properties.place + "</h3><hr> <h4><strong> Earthquake Magnitude: " +feature.properties.mag +"</strong></h4>\
@@ -29,9 +46,12 @@ function createFeatures(earthquakeData){
         onEachFeature: onEachFeature
     });
     
-    createMap(earthquakes);
-}
+    myMap = createMap(earthquakes);
 
+    return myMap;
+};
+
+//createMap function that creates the layers, the overlays, and the legend
 function createMap(earthquakes) {
 
     var lightMap = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
@@ -61,16 +81,20 @@ function createMap(earthquakes) {
         accessToken: API_KEY
     });
 
+    //create baseMaps
     var baseMaps = {
         "Light Map": lightMap,
         "Terrain Map": terrainMap,
         "Satellite Map": satMap        
     };
 
+    //create overlayMaps
     var overlayMaps = {
-        Earthquakes: earthquakes
+        Earthquakes: earthquakes,
+        TectonicPlates: tectonicPlates
     };
-
+    
+    //attache the layers to the map and center the map
     var myMap = L.map("map", {
         center: [35.000,-115.000],
         zoom: 5,
@@ -81,8 +105,7 @@ function createMap(earthquakes) {
         collapsed: false
     }).addTo(myMap);
 
-    //adding a legend to the map
-
+    //adding a legend to the map and using a for loop to write out the HTML code
     var legend = L.control({
         position: 'bottomright'
     });
@@ -101,8 +124,9 @@ function createMap(earthquakes) {
     };
 
     legend.addTo(myMap);
-};
 
+    return myMap;
+};
 
 //create a function for marker size
 function markerRadius(magnitude){
