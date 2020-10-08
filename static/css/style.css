@@ -10,12 +10,12 @@ html {
 }
 
 .legend {
+  line-height: 19px;
+  list-style-type: none;
   padding: 14px;
   font: 14px Arial, Helvetica, sans-serif;
   font-weight: bold;
   color:black;
   background: #fff;
   border-radius: 5px;
-  line-height: 20px;
-  list-style-type: none;
 }
