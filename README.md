@@ -1,7 +1,6 @@
 # Leaflet_Challenge
-Leaflet Challenge
 
-SUMMARY:
+Visualizing Data with Leaflet:
 
 This project uses Leaflet to create a map that plots earthquakes from the last 7 days.  
 
