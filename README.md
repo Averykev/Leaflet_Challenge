@@ -1,5 +1,7 @@
 # Leaflet_Challenge
 
+INSTRUCTIONS:  To view this project just visit https://averykev.github.io/Leaflet_Challenge/
+
 Visualizing Data with Leaflet:
 
 This project uses Leaflet to create a map that plots earthquakes from the last 7 days.  
